@@ -13,11 +13,6 @@ function App() {
   const [pickedPlaces, setPickedPlaces] = useState([]);
   const [sortedAvailablePlaces, setSortedAvailablePlaces] = useState([]);
 
-  function handleStartRemovePlace(id) {
-    modal.current.open();
-    selectedPlace.current = id;
-  }
-
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
       const sortedPlaces = sortPlacesByDistance(
@@ -28,6 +23,11 @@ function App() {
       setSortedAvailablePlaces(sortedPlaces);
     });
   }, []);
+
+  function handleStartRemovePlace(id) {
+    modal.current.open();
+    selectedPlace.current = id;
+  }
 
   function handleStopRemovePlace() {
     modal.current.close();
@@ -56,6 +56,14 @@ function App() {
       prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
     );
     modal.current.close();
+    const selectedPlaces =
+      JSON.parse(localStorage.getItem("selectedPlaces")) || [];
+    localStorage.setItem(
+      "selectedPlaces",
+      JSON.stringify(
+        selectedPlaces.filter((id) => id !== selectedPlace.current)
+      )
+    );
   }
 
   return (
